@@ -489,6 +489,11 @@ t.assert('ngx_mruby - Nginx::SSL.errlogger') do
   t.assert_true error_log.include? 'Servername is localhost while SSL handshaking'
 end
 
+t.assert('ngx_mruby - ssl certificate changing - reading handler from file with caching') do
+  res = `curl -k #{base_ssl(58088) + '/'}`
+  t.assert_equal '$hoge is hoge', res
+end
+
 t.assert('ngx_mruby - issue_172', 'location /issue_172') do
   res = HttpRequest.new.get base + '/issue_172/index.html'
   expect_content = 'hello world'.upcase
