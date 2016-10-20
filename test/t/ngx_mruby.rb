@@ -243,6 +243,18 @@ t.assert('ngx_mruby - bug; mruby_post_read_handler not running in 1.18.3+ for fi
   t.assert_equal "hello2", res["body"]
 end
 
+t.assert('ngx_mruby - no content', 'location /no_content') do
+  res = HttpRequest.new.get base + '/no_content'
+  t.assert_equal 200, res.code
+  t.assert_true res["body"].empty?
+end
+
+t.assert('ngx_mruby - no content with header', 'location /no_content_with_header') do
+  res = HttpRequest.new.get base + '/no_content_with_header'
+  t.assert_equal 200, res.code
+  t.assert_true res["body"].empty?
+end
+
 p nginx_version
 
 if nginx_version.split(".")[1].to_i > 6
