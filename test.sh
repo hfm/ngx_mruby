@@ -12,13 +12,13 @@ set -e
 # OS specific configuration
 if [ `uname -s` = "NetBSD" ]; then
     NPROCESSORS_ONLN="NPROCESSORS_ONLN"
-    NGINX_DEFAULT_OPT='--with-debug --with-http_stub_status_module --with-http_ssl_module --with-ld-opt=-L/usr/pkg/lib\ -Wl,-R/usr/pkg/lib --with-cc-opt=-g\ -O0'
+    NGINX_DEFUALT_OPT='--with-debug --with-http_stub_status_module --with-http_ssl_module --with-mail --with-mail_ssl_module --with-ld-opt=-L/usr/pkg/lib\ -Wl,-R/usr/pkg/lib --with-cc-opt=-g\ -O0'
     MAKE=gmake
     KILLALL=pkill
     PS_C="pgrep -l"
 else
     NPROCESSORS_ONLN="_NPROCESSORS_ONLN"
-    NGINX_DEFAULT_OPT='--with-debug --with-http_stub_status_module --with-http_ssl_module --with-cc-opt=-g\ -O0'
+    NGINX_DEFUALT_OPT='--with-debug --with-http_stub_status_module --with-http_ssl_module --with-mail --with-mail_ssl_module --with-cc-opt=-g\ -O0'
     MAKE=make
     KILLALL=killall
     PS_C="ps -C"
@@ -92,6 +92,7 @@ $PS_C nginx 2>/dev/null && $KILLALL nginx
 sed -e "s|__NGXDOCROOT__|${NGINX_INSTALL_DIR}/html/|g" test/conf/nginx.conf > ${NGINX_INSTALL_DIR}/conf/nginx.conf
 cd ${NGINX_INSTALL_DIR}/html && sh -c 'yes "" | openssl req -new -days 365 -x509 -nodes -keyout localhost.key -out localhost.crt' && sh -c 'yes "" | openssl req -new -days 1 -x509 -nodes -keyout dummy.key -out dummy.crt' && cd -
 
+cat test/conf/nginx.mail.conf >> ${NGINX_INSTALL_DIR}/conf/nginx.conf
 if [ $NGINX_SRC_MINOR -ge 10 ] || [ $NGINX_SRC_MINOR -eq 9 -a $NGINX_SRC_PATCH -ge 6 ]; then
   cat test/conf/nginx.stream.conf >> ${NGINX_INSTALL_DIR}/conf/nginx.conf
 fi
